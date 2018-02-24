@@ -219,7 +219,7 @@ int gs_ydcompute(double **a1,double b1[],double x1[],int n) /*∏ﬂÀπ_‘ºµ±∑®º∆À„*/
 /*
  * Computed
  */ 
-double computed(double **a,int h,int l, int *c1,int n) /*º∆À„œµ ˝––¡– ΩD÷µ*/
+double computed(double **a, int h, int l, int *c1,int n) /*º∆À„œµ ˝––¡– ΩD÷µ*/
 {
 	int i, j, p=1;
 	double sum=0.0;
@@ -230,15 +230,21 @@ double computed(double **a,int h,int l, int *c1,int n) /*º∆À„œµ ˝––¡– ΩD÷µ*/
 		i=++h;
 		c1[l]=0;
 		for(j=1;j<=n;j++)
-		if(c1[j])
-		if(a[i][j]==0) p++;
-		else {sum=sum+a[i][j]*computed(a,i,j,c1,n)*pow(-1,1+p); p++; }  
+			if(c1[j])
+				if(a[i][j]==0)
+				 p++;
+				else {
+					sum=sum+a[i][j]*computed(a,i,j,c1,n)*pow(-1,1+p);
+					p++; 
+				}  
 	 	c1[l]=1; 
  	}
 	return sum;
 }
 
-
+/* 
+ * 
+ */
 void ncompute(double **a,double b[],double x[],int n,int *c,double h)      /*øÀ¿≥ƒ∑∑®º∆À„*/
 {
 	int i,j;
@@ -257,6 +263,22 @@ void ncompute(double **a,double b[],double x[],int n,int *c,double h)      /*øÀ¿
  	}
 }
 
+/*
+ * Display input matrix
+ */
+void input_matrix_display(double** a, double b1[], int raw, int col)
+{
+	int i, j;
+	
+	printf("\n Input matrix = :\n");	
+	for (i = 1; i <= raw; i++) {
+		for (j = 1; j <= col; j++) {
+			printf(" %lf\t",  a[i][j]);
+		}
+		printf("<=> %lf\n", b1[i]);
+	}	
+}
+
 int main(void)
 {
 	double x[NUM];
@@ -266,7 +288,9 @@ int main(void)
 	double he;
 	char m,decision;
 	double **a;
-	
+
+	system("color 3e");//…Ë÷√≥Ã–Ú‘À––µƒ«∞æ∞…´∫Õ±≥æ∞…´
+	system("cls");//«Âø’∆¡ƒª
 	a=(double**)malloc(NUM*sizeof(double*));
 	for (i=0; i<NUM; i++)
 		a[i]=(double*)malloc(NUM*sizeof(double));
@@ -279,7 +303,7 @@ int main(void)
 			else
 				printf("Please input the total number of the equations n(n<NUM): \n");
 			scanf("%d",&n);
-		} while(n>NUM);
+		} while (n>NUM);
 		if(n==0) {
 			for(i=1; i<NUM; i++) 
 				free(a[i]);
@@ -289,13 +313,14 @@ int main(void)
 		input(a,b,n);
 		c=(int *)malloc((n+1)*sizeof(int));
 		memset(c,1,(n+1)*sizeof(int));
+		input_matrix_display(a, b, n, n);
 		he = computed(a,0,0,c,n);
-		if(fabs(he)>1e-4)   
-		{
-			Other:    chose();
+		if(fabs(he)>1e-4) {			 
+			Other:  
+				chose();
 			do{
 				m=getche();
-			}while(m!='a'&&m!='b'&&m!='A'&&m!='B'&&m!='c'&&m!='C'&&m!='d'&&m!='D'&&m!='e'&&m!='E');
+			} while(m!='a'&&m!='b'&&m!='A'&&m!='B'&&m!='c'&&m!='C'&&m!='d'&&m!='D'&&m!='e'&&m!='E');
 			switch(m)
 			{
 			case 'a':
@@ -310,12 +335,12 @@ int main(void)
 			case 'C':
 				j=ddcompute(a,b,x,n); 
 				break;
-			case 'd': ;
+			case 'd':
 			case 'D': 
 				j=1;
 				ncompute(a,b,x,n,c,he);
 				break;
-			case 'e': ;
+			case 'e':
 			case 'E':
 			 	j=2;
 		 		break;
@@ -323,30 +348,33 @@ int main(void)
 			 	j=2;
 		 		break;
 			}
-			if(j==1)
-			{
+			if(j==1) {
 				clrscr();
 				printf("\n\n\n\n");
-				printf("     D=%.4f \n",he);
-				for(i=1;i<=n;i++){
-					if(i%5==0)
-					 printf("\n");
-					printf("    %.4f    ",x[i]);}
-				}
-			else if(j==0)   
-			{printf(" \nThese equtions can't be solve is this way.\nPlease chose the other way."); goto Other;}
-			else {for(i=1; i<NUM; i++) free(a[i]);
-			free(a);
-			free(c);
-			exit(1);}
-		}
-		else printf(" \n\n\tD=%.4f\n This linear equations hasn't accurate answer!",he);
+				printf("D=%.4f \n",he);
+				for(i=1;i<=n;i++) {
+					printf("\t%lf\n",x[i]);}
+			} else if (j==0) {
+				printf(" \nThese equtions can't be solve is this way.\nPlease chose the other way."); 
+				goto Other;
+			} else {
+				for (i=1; i<NUM; i++) 
+					free(a[i]);
+				free(a);
+				free(c);
+				exit(1);
+			}
+		} else 
+			printf(" \n\n\tD=%.4f\n This linear equations hasn't accurate answer!",he);
 		printf(" \n Do you want to continue?(Y/N) \n");
-		do{
-		decision=getchar();}while(decision!='y'&&decision!='Y'&&decision!='n'&&decision!='N');
-	}while(decision=='y'||decision=='Y');
-	for(i=1; i<NUM; i++) free(a[i]);
+		do {
+			decision=getchar();
+		} while(decision!='y'&&decision!='Y'&&decision!='n'&&decision!='N');
+	} while(decision=='y'||decision=='Y');
+	for(i=1; i<NUM; i++)
+		free(a[i]);
 	free(a);
 	free(c);
+	
 	return 0; 
 }
