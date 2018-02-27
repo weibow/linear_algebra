@@ -17,15 +17,15 @@ void print(void)     /* 使用说明 */
 {
 	clrscr();
 	printf("\n\n\n\n\n\t\t\t\t Introduction \n");
-	printf("\t*--------------------------------------------------------------*\n");
+	printf("\t*----------------------------------------------------------------*\n");
 	printf("\t*    This program was design for compute linear equations.       *\n");
 	printf("\t*    The way of use it is very simple.                           *\n");
-	printf("\t*    First : Input the number of the equation;(Input 0 to exit) *\n");
+	printf("\t*    First : Input the number of the equation;(Input 0 to exit)  *\n");
 	printf("\t*    Second: Input the coefficient of every eqution;             *\n");
 	printf("\t*    Third : Input the constant of every eqution;                *\n");
-	printf("\t*    Last : Chose the way you want use to solve the equtions; *\n");
+	printf("\t*    Last : Chose the way you want use to solve the equtions;    *\n");
 	printf("\t*    That's all, input any key to run it . . .                   *\n");
-	printf("\t*-------------------------By__TJX------------------------------*\n");
+	printf("\t*-------------------------By__TJX--------------------------------*\n");
 //	getch();
 }
 
@@ -59,51 +59,54 @@ void input(double **a1,double b1[],int num)    /*数据输入*/
 	do {
 		printf("Please input array a[%d][%d]: \n",num,num);
 		printf("Warn: The first number of the array mustn't contain zero! \n");
-		for (i=1; i<=num; i++){
+		for (i = 1; i <= num; i++) {
 			printf("Please input array a[%d][]: \n",i);
-			for(j=1;j<=num;j++)	
-			{	
+			for (j = 1;j <= num; j++) {	
 				t=0;
-				if (i==1&&j==1)
-				{
-			 		do{
-						if(t==0) { 
+				if (i==1&&j==1) {
+			 		do {
+						if (t == 0) { 
 							printf("\nal[%d][%d]= ", i, j);
-							scanf("%lf",&a1[i][j]);
+							//scanf("%lf",&a1[i][j]);
+							a1[i][j] = (double)(rand()%100);
 							printf("Input1 a[%d][%d] = %lf \n", i, j, a1[i][j]); 
 							t++;
 						} else {
 							printf("The input is invalid,please input again:\n");
 							printf("\nal[%d][%d] = ", i, j);
-						 	scanf("%lf",&a1[i][j]);
+							a1[i][j] = (double)(rand()%100);
+						 	//scanf("%lf",&a1[i][j]);
 						 	printf("Input2 a[%d][%d] = %lf \n", i, j, a1[i][j]); 
 						 }
-					}while(a1[i][j]==0);
-				} else  {
+					} while (a1[i][j] == 0);
+				} else {
 					printf("\nal[%d][%d]= ", i, j);
-					scanf("%lf",&a1[i][j]);
+					a1[i][j] = (double)(rand() % 100);
+					//scanf("%lf",&a1[i][j]);
 					printf("Input a[%d][%d] = %lf \n", i, j, a1[i][j]); 
 				}
 			}
 		}
 		printf(" \nPlease check the value of array a[%d][%d].\n press Y to input again, press N to enter into next step\n",num,num);
 		do{
-			de1=getch();
-		}while(de1!='y'&&de1!='Y'&&de1!='n'&&de1!='N');
-	}while(de1=='y'||de1=='Y');
+			de1 = getch();
+		} while(de1 != 'y' && de1 != 'Y' && de1 != 'n' && de1 != 'N');
+	} while (de1 == 'y' || de1 == 'Y');
 	
-	do{
+	do {
 		printf("Please input array b[%d]: \n",num);
-		p=b1+1;
-		for(i=1; i<=num;i++) {
+		p = b1+1;
+		for (i = 1; i <= num; i++) {
 			printf(" Please b[%d]:\n", i); 
-			scanf("%lf",p++);
+			*p++ = (double)(rand()%100);
+			printf("b[%d] = %lf\n", i, *(p-1));
+			//scanf("%lf",p++);
 		}
 		printf(" \nPlease check the value of array b[%d],press Y to input again.\n",num);
-		do{
+		do {
 			de2 = getch();
-		}while(de2!='y'&&de2!='Y'&&de2!='n'&&de2!='N');
-	}while(de2=='y'||de2=='Y');
+		} while (de2 != 'y' && de2 != 'Y' && de2 != 'n' && de2 != 'N');
+	} while (de2 == 'y' || de2 == 'Y');
 }
 
  
@@ -111,10 +114,9 @@ int max(double *t1, double x1[],int n)    /*迭代子函数*/
 { 
 	int i,temp=0;
 	
-	for(i=1;i<=n;i++)
-		if(fabs(x1[i]-t1[i])>1e-2) 
-		{
-			temp=1;
+	for (i = 1; i <= n; i++)
+		if (fabs(x1[i]-t1[i]) > 1e-2) {
+			temp = 1;
 			break;
 		}
 	/* printf("    %d    ",temp); */
@@ -131,24 +133,28 @@ int ddcompute(double **a1,double b1[],double x1[],int n) /*迭代法计算*/
 	double sum1=0.0, sum2=0.0;
 	t=(double*)malloc(n*sizeof(double));
 	printf("\nPlease Input The Initial Value of x:\n");
-	for(i=1;i<=n;i++)
-		scanf("%lf",&x1[i]);
+	for( i = 1; i <= n; i++)
+		scanf("%lf", &x1[i]);
 	do {
 		k++;
 		for(i=1;i<=n;i++)
-		t[i]=x1[i];
-		for(i=1;i<=n;i++)
-		{ sum1=0.0;sum2=0.0;
-		for(j=1;j<=i-1;j++) sum1=sum1+a1[i][j]*x1[j]; /*printf(" sum1= %0.4f ",sum1);*/
-		
-		for(j=i+1;j<=n;j++) sum2=sum2+a1[i][j]*t[j]; /* printf(" sum2= %0.4f ",sum2);}*/
-		if(a1[i][i]==0||fabs(sum1)>1e+12||fabs(sum2)>1e+12)
-		{printf(" \nWarning: These equtions can't be solve by this way!\n Press any Key to continue...");
-		getch();
-		free(t);
-		return 0;}
-		x1[i]=(b1[i]-sum1-sum2)/a1[i][i];}
-	}while(max(t,x1,n));
+			t[i] = x1[i];
+		for(i=1;i<=n;i++) { 
+			sum1 = 0.0;
+			sum2 = 0.0;
+			for(j=1;j<=i-1;j++)
+				sum1=sum1 + a1[i][j]*x1[j]; /*printf(" sum1= %0.4f ",sum1);*/
+							
+			for(j=i+1;j<=n;j++)
+				sum2 = sum2 + a1[i][j]*t[j]; /* printf(" sum2= %0.4f ",sum2);}*/
+			if (a1[i][i] == 0 || fabs(sum1) > 1e+12 || fabs(sum2) > 1e+12) {
+				printf(" \nWarning: These equtions can't be solve by this way!\n Press any Key to continue...");
+				getch();
+				free(t);
+				return 0;
+			}
+			x1[i]=(b1[i]-sum1-sum2)/a1[i][i];}
+	} while (max(t,x1,n));
 	/* for(i=1;i<=n;i++)
 	{if(i%3==0) printf("\n");
 	printf("    %.4f    ",x1[i]);}*/
@@ -184,7 +190,7 @@ int gscompute(double **a1,double b1[],double x1[],int n) /*高斯消元法计算*/
 }
 
 /*
- * Gauss  
+ * Gauss jordan eliminate
  */
 int gs_ydcompute(double **a1,double b1[],double x1[],int n) /*高斯_约当法计算*/
 {
@@ -289,11 +295,11 @@ int main(void)
 	char m,decision;
 	double **a;
 
-	system("color 3e");//设置程序运行的前景色和背景色
-	system("cls");//清空屏幕
-	a=(double**)malloc(NUM*sizeof(double*));
-	for (i=0; i<NUM; i++)
-		a[i]=(double*)malloc(NUM*sizeof(double));
+	system("color 3e");	//设置程序运行的前景色和背景色
+	system("cls");		//清空屏幕
+	a =	(double**)malloc(NUM * sizeof(double*));
+	for (i=0; i < NUM; i++)
+		a[i] = (double*)malloc(NUM*sizeof(double));
 	print();
 	do{
 		clrscr();
@@ -371,10 +377,9 @@ int main(void)
 			decision=getchar();
 		} while(decision!='y'&&decision!='Y'&&decision!='n'&&decision!='N');
 	} while(decision=='y'||decision=='Y');
-	for(i=1; i<NUM; i++)
+	for (i = 1; i < NUM; i++)
 		free(a[i]);
 	free(a);
-	free(c);
-	
+	free(c);	
 	return 0; 
 }
